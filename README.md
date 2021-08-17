@@ -32,4 +32,4 @@
     * Nếu ta không là Shopee, ta có thể xây dựng thêm một model-1 với input là comment của khách hàng, output là nhóm hàng mà comment này khả năng cao thuộc về. Sau đó ta mới bắt đầu đưa comment này vào model-2 tương ứng với nhóm hàng mà model-1 đề xuất và đánh giá comment này.
     Đây là một vài cách mà ta có thể ứng dụng. Thực tế thì các hệ thống này có khả năng cao phức tạp hơn nhiều, nhưng ở đây ta chỉ chú tâm vào nhóm hàng thời trang thôi. 
 
-* File [00.scraping.ipynb](00.scraping.ipynb) chứa toán bộ mã nguồn và giải thích quá trình crawl data
+* File [00.scraping.ipynb](00.scraping.ipynb) chứa toán bộ mã nguồn và giải thích quá trình crawl data.

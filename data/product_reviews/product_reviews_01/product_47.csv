@@ -1,0 +1,59 @@
+comment,rating
+"介绍如何使用STM32F767来读取DHT11数字温湿度传感器，从而得到环境温度和湿等信息 ，并把从 温湿 度值 显示在 LCD模块上。该部分代码是根据单总线操作时序来读取DHT11的温湿度值的，通过DHT11_Read_Data函数读取，如果返回 0，则说明读取成功，返回1, 读取失败。
+
+下",5
+"Màu bên ngoài đẹp hơn, áo to dày dặn nhưng mặc mát và nhẹ lắm. Shop đóng hộp cẩn thận, ship nhanh",5
+"Áo màu đỏ bên ngoài trầm hơn nhưng đẹp lắm, mặc sáng da. Shop đóng hàng cẩn thận",5
+"ÁO màu kem như hình, vải dày 2 lớp, đóng gói đẹp chắc chắn, chuẩn bị hàng nhanh",5
+"Lần đầu mua online của shop
+Chất lượng tuyệt vời
+Sẽ ủng hộ nhiệt tình
+Thanks",5
+"Áo đẹp, mặc nhẹ thoải mái, dây kéo tốt, áo chất lượng tốt mà giá ko bị mắc",5
+hàng đẹp gần đúng màu sẽ ủng hộ thêm shop. vải chưa mặc nên không biết có nóng,5
+"hàng ok ko vấn đề gì cũng ổn, time vận chuyển cũng nhanh okokokok",5
+"Áo siêu đẹp, 2 lớp dày dặn, giao hàng siêu nhanh, mới đặt hôm qua, sáng mai nhận được luôn. Nói chung là siêu ưng ạ",5
+hàng đẹp chấy lươngj sản phẩm tuỵet vời dóng gói sản phẩm rất đẹp,5
+"Áo giày dặn, 2 lớp, màu đỏ ở ngoài đậm hơn trong hình nhưng nhìn xinh, nhưng k biết lớp ngoài có bị xù k",5
+"Vừa người, giao nhanh, mặc cả mùa đông và mùa hè đều ok. Màu hồng hơi tối",5
+"Lười chụp ảnh =))))
+Áo đẹp nha, freesize, 2 lớp, mặc dày, ấm, mùa mưa tới gòi, này mặc đi ĐL phê lắm",5
+"áo khoác cực kì đẹp , giao hàng nhanh, rất đáng mua, cảm ơn shop rất nhiều",5
+"Áo đẹp, dầy dặn, rất thích sản phẩm. Hình ảnh mang tính chất nhận xu",5
+"Áo khoác mỏng nhẹ, màu đậm hơn trong hình, form dáng y như hình, dây kéo hơi bén 1 xíu dễ xước tay",5
+Đóng gói sản phẩm chắc chắn. Thời gian giao hàng nhanh . Chất lương tạm,5
+"Vải mềm, dịu dàng, lớp vải dù bên trong mặc trời nóng lạnh đều ổn",5
+"Áo vải dày dặn,khá oke,mũ rộng vừa ý mà thích hợp mặc thời tiết mát và lạnh hơn :))))  hình ảnh mang tc nhận xu :)))",5
+Sản phẩm toẹt vời như bầu trời sài gònnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn,5
+"Hình ảnh klq cho lắm 😂😂😂
+Áo đẹp đã mua đồ shop nhìu lần nên yên tâm",5
+"Giao hàng nhanh, sản phẩm như hình, sẽ ủng hộ trong lần mua tiếp theo
+Hình ảnh và video chỉ mang tính chất minh họa",5
+Dây kéo hơi cứng và khó kéo,5
+"Áo khoác của shop đẹp lắm luôn, mặc lại thoải mái, mua của shop được 4 màu áo rồi, thích màu nude nhất",5
+"Áo khoác đẹp, dày dặn form to mặc thoải mải, đóng hàng cẩn thận,shop tặng thêm sổ nữa,ship hàng rất nhanh",5
+Thời gian giao hàng nhanh. Shop phục vụ tốt. Đóng gói sản phẩm đẹp và chắc chắn. Áo khoác đẹp nha m.n vải dày 2 lớp á. Mùa hè mặc hơi nóng,5
+"Aso ddejp giao hangf nhanh, chaats vair raats ddepj...... .",5
+"Vải đẹp, mặc ấm. Size rộng, tiếc mỗi việc áo khoác không có túi trong, có nữa là cực ok luôn 👌👌👌",5
+áo đẹp cực kì luôn. rất đáng tiền ạ huhu nhưng mà không ngờ áo to quá. bảo dưới 56 nhưng 63 mặc vẫn rộng :(((,5
+"Áo đẹp,  vừa giá,  mà thích áo có túi trong mong shop nhập mẫu",5
+"Ảnh không liên qua nhưng áo đẹp. Ấm ấm, rộng rãi nên không quá nóng. Áo nude lót trong màu xám nên cứ xịn xịn kiểu gì é. Mua sale 195k cả ship.",5
+Đẹp nghen !!!,5
+Amazing good job shop ❤️ Áo dễ cưng lắm mọi người ơiiiiiiiiii,5
+Áo xinh 2 lớp mặc thoáng mát k có quá hầm 👍👍👍,5
+"áo đẹp quá ok với giá tiền lun 
+sẽ cân nhắc cái sp khác của shop 🥰",5
+"Áo đep như hình, form rộng thoải mái",5
+Chất lượng tuyệt vời,5
+Áo rất đẹp shop giao hàng nhanh đóng gói kĩ 😍,5
+"Chất lượng sản phẩm tuyệt vời, đóng gói sản phẩm chắc chắn, áo rất dày dặn, rất đẹp",5
+Ko cho thay đổi địa điểm nhận hàng r lỡ bận ko nhờ ng lấy đc thì s,1
+áo đẹp phết :3,5
+"áo khoát mặc mát đẹp. fom áo 
+rất thích nha chị hihihihi",5
+Như ảnh from đẹp nha mọi người😍😍,5
+Vãi đẹp lắm,5
+Áo đẹp,5
+"Vải ok lắm , rất hài lòng",5
+Sản phẩm ok.,5
+Chất lượng sản phẩm thì được nhưng đóng gói hàng thì mình không hài lòng cho lắm. Nó không chắc chắn.,5

@@ -1,0 +1,5 @@
+<hr>
+
+* Tiếp theo, ta nên xóa các sample mà khả năng cao ko là tiếng việt, vì sao ta làm bước này, đơn giản thôi đây là shopee việt nam, và các comment cố ý bằng tiếng anh, tiếng hàn, tiếng trung của các "thánh làm màu" sẽ là các noise sample khiến model ta bị giảm hiệu năng.
+* Nhưng làm sao ta có thể thực hiện điều này, cách đơn giản nhất là ta có thể sử dụng các package như `textblob`, `googletrans`,... các package này chứa các function giúp ta detect language cho text, tuy nhiên hạn chế là chúng chỉ cho tối đa khoảng 200 request một ngày thôi, và số mẫu của chúng ta hiện tại là quá lớn.
+* Vậy cách đơn giản hơn là ta có thể xây dựng một dictionary chứa các từ đơn của tiếng việt, với mỗi comment, nếu số lượng từ ko tìm thấy trong dictionary này lớn hơn số từ được tìm thấy trong dictionary thì khả năng cao đây là một comment làm màu

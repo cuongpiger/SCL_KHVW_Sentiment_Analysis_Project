@@ -5,7 +5,10 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 import pandas as pd
+import re
+import requests
 
+from typing import List
 
 def waitPageLoaded(pdriver, plogoClassname):
     '''
@@ -180,6 +183,61 @@ def getProductReviews(pproductURL: str):
     
     '''Trả kết quả crawl dc về'''
     return product_reviews
+
+
+'''
+  * Cho requests biết các thông tin về hệ điều hành (Linux, MacOS, Windows), kiến trúc 32 hay 64 bit,
+version của Gecko và Firefox (ko cần quan tâm về cái này lắm, người ta đã cấu hình sẵn, tra bảng lụm
+vô rồi sai thôi: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent/Firefox).
+  * Ở đây sài Linux x64.
+'''
+headers = {
+    'User-Agent': "Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20100101 Firefox/10.0"
+}
+
+def getProductReviewsAPI(pproductURL: str) -> (List[Review]):
+    def collect_comment(ppage: int, pproductID: str, pshopID: str):
+        params = (
+        ('filter', '0'),
+        ('flag', '1'),
+        ('itemid', pproductID),
+        ('limit', '6'),
+        ('offset', ppage),
+        ('shopid', pshopID),
+        ('type', '0'),
+        )
+
+        response = requests.get('https://shopee.vn/api/v2/item/get_ratings', headers=headers, params=params)
+        return response.json().get('data').get('ratings')
+    
+    def parse_comment(presponse):
+        ratting = []
+        comment = []
+        for elem in presponse:
+            ratting.append(elem.get('rating_star'))
+            comment.append(elem.get('comment'))
+        return ratting, comment
+        
+    
+    identifier: str  = re.search("i\.\d+.\d+", pproductURL).group(0)
+    _, shop_id, product_id = identifier.split('.')
+    product_reviews = []
+
+    no_reviews = 0
+    while True:
+        res = collect_comment(no_reviews*6, product_id, shop_id)
+        rattings, comments = parse_comment(res)
+        no_reviews += 1
+        
+        if not ''.join(comments): break
+        
+        for comment, ratting in zip(comments, rattings):
+            if not comment: continue
+            
+            product_reviews.append(Review(comment, ratting))
+            
+    return product_reviews
+
 
 
 def writeToCsv(pfilePath: str, previews: list):

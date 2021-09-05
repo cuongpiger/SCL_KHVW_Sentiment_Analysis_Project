@@ -1,9 +1,10 @@
 import os
 import re
 import pandas as pd
+import unicodedata
 
 from os.path import isfile, join
-from typing import List
+from typing import List, Dict
 import modules.user_object_defined as udt
 
 def getAllFolderPath(ppath: str) -> (List[str]):
@@ -68,3 +69,26 @@ def labelRating(pdataframe: udt.Dataframe, pthreshold:int = 4) -> (udt.Dataframe
     """
     pdataframe['label'] = pdataframe['rating'].apply(lambda rt: 1 if rt >= pthreshold else 0)
     return pdataframe
+
+
+def buildDictionaryFromFile(ppath: str) -> (Dict[str, str]):
+    """
+    Dùng để xây dựng một từ điển tử filepath
+
+    Args:
+        ppath (str): đường dẫn file
+
+    Returns:
+        [Dict[str, str]]: 
+    """
+    d = {}
+    
+    with open(ppath) as rows:
+        for row in rows:
+            prefix, suffix = row.strip().split(',')
+            prefix = unicodedata.normalize('NFD', prefix)
+            suffix = unicodedata.normalize('NFD', suffix)
+            d[prefix] = suffix
+            
+    return d
+            

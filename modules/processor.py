@@ -2,7 +2,7 @@ import re
 import emojis
 import unicodedata
 
-from typing import List
+from typing import List, Dict
 import modules.regex_patterns as RegPattern
 import modules.user_object_defined as udt
 
@@ -73,6 +73,44 @@ def removeSpecialLetters(ptext: str) -> (str):
         [str]: comment without special characters
     """
     return re.sub("\s+", " ", re.sub(RegPattern.UTF8_LOWER, " ", ptext)).strip() 
+
+
+def removeDuplicateLetters(ptext: str) -> (str):
+    """
+    Hàm dùng xóa các kí tự bị dupplucate, giả sử :
+      * ptext = 'okkkkkkkkkkkkkkkkkkkkkk chờiiiiiiiiii ơiiiiiiii xinhhhhhhhhhhhh quá đẹppppppppp xỉuuuuuuu'
+      * Sau khi dùng hàm này thì thành:
+        ptext = 'ok chời ơi xinh quá đẹp xỉu'
+      
+    Args:
+        ptext (str): comment
+
+    Returns:
+        [str]: comment that removing duplicated letters 
+    """
+    return re.sub(r'(.)\1+', r'\1', ptext)
+
+
+def replaceWithDictionary(ptext: str, pdictionary: Dict[str, str]) -> (str):
+    """
+    Hàm này dùng để thay thế các từ đơn trong ptext mà là key của pdictionary, sau đó
+    thay thế từ này bằng value tương ứng với key đó.
+
+    Args:
+        ptext (str): comment
+        pdictionary (Dict[str, str]): dictionary
+
+    Returns:
+        (str): comment đã dc thay thế bởi các value match với pdictionary
+    """
+    words = ptext.strip().split(' ')
+    new_words = []
+    
+    for word in words:
+        word = pdictionary.get(word, word)
+        new_words.append(word)
+        
+    return ' '.join(new_words)
 
 
 def printAfterProcess(pdataframe: udt.Dataframe, pcolumnName: str = 'label'):

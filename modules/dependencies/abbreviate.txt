@@ -62,3 +62,4 @@ khg,không
 r,rồi
 t,tôi
 tui,tôi
+m,mình

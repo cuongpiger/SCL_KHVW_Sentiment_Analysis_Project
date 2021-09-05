@@ -1,5 +1,6 @@
 import re
 import emojis
+import unicodedata
 
 from typing import List
 import modules.regex_patterns as RegPattern
@@ -44,6 +45,21 @@ def extractEmoji(ptext: str) -> (str):
         [str]: string chứa các emoji
     """
     return ' '.join(list(emojis.get(ptext)))
+
+
+def normalizeComment(ptext: str, plower: bool = True) -> (str):
+    """
+    Chuẩn hóa text bằng cách lower nó sau đó sử dụng phương pháp NFD để biểu diễn text
+
+    Args:
+        ptext (str): comment
+        plower (bool): có lower ko
+
+    Returns:
+        [str]: comment đã lower và chuẩn hóa
+    """
+    ptext = ptext.lower() if plower else ptext
+    return unicodedata.normalize('NFD', ptext)
 
 
 def removeSpecialLetters(ptext: str) -> (str):

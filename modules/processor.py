@@ -1,6 +1,7 @@
 import re
 import emojis
 import unicodedata
+import enchant
 
 from typing import List, Dict
 import modules.regex_patterns as RegPattern
@@ -103,14 +104,90 @@ def replaceWithDictionary(ptext: str, pdictionary: Dict[str, str]) -> (str):
     Returns:
         (str): comment đã dc thay thế bởi các value match với pdictionary
     """
-    words = ptext.strip().split(' ')
+    ptext = re.sub(r'(\s)\1+', r'\1', ptext).strip()
+    words = ptext.split(' ')
     new_words = []
     
     for word in words:
+        word = removeDuplicateLetters(word)
         word = pdictionary.get(word, word)
         new_words.append(word)
         
-    return ' '.join(new_words)
+    return ' '.join(new_words).strip()
+
+
+def removeNoiseWord(ptext: str, pdictionary: Dict[str, bool], penchantEN) -> (str):
+    """
+    Xóa các từ rác
+
+    Args:
+        ptext (str): comment
+        pdictionary (Dict[str, bool]): từ điển tiếng việt
+        penchantEN (pyenchant object): kiểm tra một từ ko phải tiếng việt thì có phải tiếng anh ko 
+
+    Returns:
+        (str): new comment without garbage words
+    """
+    ptext = re.sub(r'(\s)\1+', r'\1', ptext).strip()
+    words = ptext.split(' ')
+    new_words = []
+    english_cnt = 0
+    vietnam_cnt = 0
+    
+    for word in words:
+        word = word.strip()
+        no_duplicate_word = removeDuplicateLetters(word)
+        
+        if word == '' or no_duplicate_word == '': continue
+        
+        
+        if pdictionary.get(no_duplicate_word, False) == True: # kiếm tra word có trong tiếng việt ko
+            vietnam_cnt += 1
+            new_words.append(no_duplicate_word)
+        elif penchantEN.check(word) == True: # kiếm tra từ có trong tiếng anh ko
+            english_cnt += 1
+            new_words.append(word)
+            
+    if english_cnt > vietnam_cnt or vietnam_cnt == 0: # nếu một câu mà từ tiếng anh nhiều hơn tiếng việt
+        return ''
+    else:
+        return ' '.join(new_words).strip()
+    
+
+def removeStopwords(ptext: str, plist: List[str]) -> (str):
+    """
+    Loại bỏ stopword
+
+    Args:
+        ptext (str): comment
+        plist (List[str]): chứa các stopword
+
+    Returns:
+        (str): comment mới không chứa stopword
+    """
+    ptext = f" {ptext} "
+    
+    for sw in plist:
+        sw = f" {sw} "
+        ptext = re.sub(sw, ' ', ptext)
+        
+    return re.sub(r'(\s)\1+', r'\1', ptext).strip()
+
+
+def removeEmptyOrDuplicateComment(previews: udt.Dataframe) -> (udt.Dataframe):
+    """
+    Xóa các empty hoặc duplicate sample
+
+    Args:
+        previews (udt.Dataframe): comment
+
+    Returns:
+        (udt.Datafrane):
+    """
+    previews = previews[previews['normalize_comment'] != '']
+    previews = previews.drop_duplicates(subset=['normalize_comment'])
+    
+    return previews.reset_index(drop=True)
 
 
 def printAfterProcess(pdataframe: udt.Dataframe, pcolumnName: str = 'label'):

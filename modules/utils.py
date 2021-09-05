@@ -71,12 +71,13 @@ def labelRating(pdataframe: udt.Dataframe, pthreshold:int = 4) -> (udt.Dataframe
     return pdataframe
 
 
-def buildDictionaryFromFile(ppath: str) -> (Dict[str, str]):
+def buildDictionaryFromFile(ppath: str, psuffix: bool = False) -> (Dict[str, str]):
     """
     Dùng để xây dựng một từ điển tử filepath
 
     Args:
         ppath (str): đường dẫn file
+        psuffix (bool): 
 
     Returns:
         [Dict[str, str]]: 
@@ -84,11 +85,36 @@ def buildDictionaryFromFile(ppath: str) -> (Dict[str, str]):
     d = {}
     
     with open(ppath) as rows:
-        for row in rows:
-            prefix, suffix = row.strip().split(',')
-            prefix = unicodedata.normalize('NFD', prefix)
-            suffix = unicodedata.normalize('NFD', suffix)
-            d[prefix] = suffix
-            
+        if not psuffix:
+            for row in rows:
+                prefix, suffix = row.strip().split(',')
+                prefix = unicodedata.normalize('NFD', prefix.strip())
+                suffix = unicodedata.normalize('NFD', suffix.strip())
+                d[prefix] = suffix
+        else:
+            for row in rows:
+                prefix = unicodedata.normalize('NFD', row.strip())
+                d[prefix] = True
+                
     return d
+
+
+def buildListFromFile(ppath: str) -> (List[str]):
+    """
+    Tạo List[str] chứa các từ trong ppath
+
+    Args:
+        ppath (str): đường dẫn đến file cần đọc
+
+    Returns:
+        (List[str]): 
+    """
+    d = []
+    
+    with open(ppath) as rows:
+        for row in rows:
+            row = unicodedata.normalize('NFD', row.strip())
+            d.append(row)
+            
+    return d         
             

@@ -1,7 +1,6 @@
 import re
 import emojis
 import unicodedata
-import enchant
 
 from typing import List, Dict
 import modules.regex_patterns as RegPattern

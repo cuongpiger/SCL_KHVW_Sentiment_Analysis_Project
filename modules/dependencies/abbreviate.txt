@@ -63,3 +63,4 @@ r,rồi
 t,tôi
 tui,tôi
 m,mình
+mink,mình

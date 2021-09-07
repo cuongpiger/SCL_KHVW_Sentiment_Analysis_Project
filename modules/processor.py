@@ -103,11 +103,15 @@ def replaceWithDictionary(ptext: str, pdictionary: Dict[str, str]) -> (str):
     Returns:
         (str): comment đã dc thay thế bởi các value match với pdictionary
     """
-    ptext = re.sub(r'(\s)\1+', r'\1', ptext).strip()
-    words = ptext.split(' ')
+    # ptext = re.sub(r'(\s)\1+', r'\1', ptext).strip()
+    words = ptext.strip().split(' ')
     new_words = []
     
     for word in words:
+        word = word.strip()
+        
+        if word == '': continue
+        
         word = removeDuplicateLetters(word)
         word = pdictionary.get(word, word)
         new_words.append(word)

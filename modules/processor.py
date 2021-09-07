@@ -31,7 +31,7 @@ def containAdvertisement(ptext: str) -> (int):
         [int]: 1 nếu upper letter chiếm hơn 1 nữa độ dài chuổi, otherwise 0
     """
     text_no_upper = re.sub(RegPattern.UTF8_UPPER, '', ptext) # thay các upper letter thành ''
-    return int(len(text_no_upper) / len(ptext) >= 0.5)
+    return len(text_no_upper) >= 0.5*len(ptext)
 
 
 def extractEmoji(ptext: str) -> (str):
@@ -103,7 +103,7 @@ def replaceWithDictionary(ptext: str, pdictionary: Dict[str, str]) -> (str):
     Returns:
         (str): comment đã dc thay thế bởi các value match với pdictionary
     """
-    # ptext = re.sub(r'(\s)\1+', r'\1', ptext).strip()
+    ptext = re.sub(r'(\s)\1+', r'\1', ptext)
     words = ptext.strip().split(' ')
     new_words = []
     

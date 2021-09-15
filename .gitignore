@@ -1,3 +1,4 @@
 .DS_Store
 .ipynb_checkpoints
 modules/__pycache__
+geckodriver.log

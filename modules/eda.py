@@ -11,7 +11,7 @@ def pieChart(previews: udt.Dataframe):
     positive_class = previews.shape[0] - negative_class
     colors = sns.color_palette('tab10', 4)[2:]
     
-    plt.pie([positive_class, negative_class], labels=['Positive', 'Negative'], colors=colors, autopct="%.0f%%")
+    plt.pie([positive_class, negative_class], labels=[f'Positive - {positive_class} samples', f'Negative - {negative_class} samples'], colors=colors, autopct="%.0f%%")
     plt.show()
     
 def emojiClassBarplot(previews: udt.Dataframe):
@@ -38,4 +38,20 @@ def emojiClassBarplot(previews: udt.Dataframe):
     plt.legend(title="Have emoji\n")
     plt.show()
     
+def lengthDistplot(previews: udt.Dataframe):
+    plt.figure(figsize=(10, 7))
+    sns.distplot(previews.loc[previews.label == 0, 'length'], color='red', label='Negative')
+    sns.distplot(previews.loc[previews.label == 1, 'length'], color='green', label='Positive')
+    plt.legend()
+    plt.show()
     
+def noWordsFrequency(previews: udt.Dataframe):
+    fig = plt.figure(figsize=(20, 7))
+    ax1 = fig.add_subplot(1, 2, 1)
+    ax2 = fig.add_subplot(1, 2, 2)
+    ax1.set_title("Negitive")
+    ax2.set_title("Positive")
+    previews.loc[previews.label == 0, 'no_words'].hist(bins=30, ax=ax1)
+    previews.loc[previews.label == 1, 'no_words'].hist(bins=30, ax=ax2)
+    fig.tight_layout()
+    plt.show()

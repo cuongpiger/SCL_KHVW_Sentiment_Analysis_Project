@@ -55,3 +55,11 @@ def noWordsFrequency(previews: udt.Dataframe):
     previews.loc[previews.label == 1, 'no_words'].hist(bins=30, ax=ax2)
     fig.tight_layout()
     plt.show()
+    
+def boxplotDescribeStatistics(previews: udt.Dataframe):
+    df = previews.copy()
+    df['label'] = df['label'].apply(lambda x: "Positive" if x > 0 else "Negative")
+    fig, axs = plt.subplots(nrows=2, figsize=(10, 15))
+    sns.boxplot(data=df, x='length', y='label', ax=axs[0])
+    sns.boxplot(data=df, x='no_words', y='label', ax=axs[1])
+    plt.show()

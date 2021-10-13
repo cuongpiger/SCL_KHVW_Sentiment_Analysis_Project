@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import modules.user_object_defined as udt
+import statsmodels.api as sm
+from statsmodels.formula.api import ols
 
 
 def pieChart(previews: udt.Dataframe):
@@ -63,3 +65,14 @@ def boxplotDescribeStatistics(previews: udt.Dataframe):
     sns.boxplot(data=df, x='length', y='label', ax=axs[0])
     sns.boxplot(data=df, x='no_words', y='label', ax=axs[1])
     plt.show()
+    
+def onewayANOVA(previews: udt.Dataframe, continous_var: str, post_hoc: bool = False):
+    df = previews.copy()
+    df['label'] = df['label'].apply(lambda x: "Positive" if x > 0 else "Negative")
+    mod = ols(f'{continous_var} ~ label', data=df).fit()
+    aov_tbl = sm.stats.anova_lm(mod, type=2)
+    
+    if not post_hoc: print(aov_tbl)
+    
+    if post_hoc:
+        return mod.t_test_pairwise('label').result_frame

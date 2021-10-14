@@ -174,8 +174,8 @@ def intersectComplementWords(previews: udt.Dataframe):
     
 def barplotTwoDirections(pwords: udt.Dataframe):
     fig = go.Figure()
-    fig.add_trace(go.Bar(x=pwords['word'], y=[-elm[0] for elm in pwords['freq']], name="Negative"))
-    fig.add_trace(go.Bar(x=pwords['word'], y=[elm[1] for elm in pwords['freq']], name="Positive"))
+    fig.add_trace(go.Bar(x=pwords['word'], y=[-elm[0] for elm in pwords['freq']], name="Negative", marker_color='crimson'))
+    fig.add_trace(go.Bar(x=pwords['word'], y=[elm[1] for elm in pwords['freq']], name="Positive", marker_color='cornflowerblue'))
 
     fig.update_layout(barmode='relative', 
                       xaxis=dict(tickfont=dict(size=11, color='black')))

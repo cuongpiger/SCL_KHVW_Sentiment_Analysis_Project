@@ -76,3 +76,10 @@ def onewayANOVA(previews: udt.Dataframe, continous_var: str, post_hoc: bool = Fa
     
     if post_hoc:
         return mod.t_test_pairwise('label').result_frame
+    
+def regplotLengthNoWords(previews: udt.Dataframe):
+    df = previews.copy()
+    df['label'] = df['label'].apply(lambda x: "Positive" if x > 0 else "Negative")
+    plt.figure(figsize=(12, 10))
+    sns.lmplot(data=df, x='length', y='no_words', hue='label')
+    plt.show()

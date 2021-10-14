@@ -7,7 +7,7 @@ import statsmodels.api as sm
 import unicodedata
 from statsmodels.formula.api import ols
 from wordcloud import WordCloud
-from typing import Dict, Tuple
+from typing import Dict, Tuple, List
 
 
 def pieChart(previews: udt.Dataframe):
@@ -126,3 +126,10 @@ def bagOfWordsGetRangeBased(pword_freq: Dict[str, int], prange: Tuple[int, int])
         else: break
         
     return words
+
+def wordFrequencyHistplot(pwordfreq: List[int], yscale=False):
+    plt.figure(figsize=(10, 7))
+    ax = sns.histplot(x=pwordfreq, color='g', bins=50, element='step')
+    if yscale: ax.set_yscale('log')
+    plt.xticks([])
+    plt.show()

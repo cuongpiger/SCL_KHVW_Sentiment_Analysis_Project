@@ -5,6 +5,7 @@ import numpy as np
 import modules.user_object_defined as udt
 import statsmodels.api as sm
 import unicodedata
+import plotly.graph_objects as go
 from statsmodels.formula.api import ols
 from wordcloud import WordCloud
 from typing import Dict, Tuple, List
@@ -137,7 +138,7 @@ def wordFrequencyGroupBarplot(pwordfreq: List[int], yscale=False):
     plt.xlabel("")
     plt.show()
     
-def wordFrequencyBarplot(pwordfreq: List[int]):
+def wordFrequencyBarplot(pwordfreq: udt.Dataframe):
     fig, ax = plt.subplots(figsize=(10, 20))
     ax = fig.add_axes([0,0,1,1])
     bars = ax.barh(pwordfreq['word'], pwordfreq['freq'], color='olive')
@@ -145,3 +146,37 @@ def wordFrequencyBarplot(pwordfreq: List[int]):
     plt.xticks(rotation=0)
     plt.xlabel("")
     plt.show()
+    
+def intersectComplementWords(previews: udt.Dataframe):
+    word_set = set((" ".join(previews['normalize_comment'])).split(" "))
+    word_dct = {word: [0, 0] for word in word_set}
+    inter_words = {}
+    negative_words = {}
+    positive_words = {}
+    
+    for sen, lbl in zip(previews['normalize_comment'], previews['label']):
+        for word in sen.split(" "):
+            word_dct[word][lbl] += 1
+            
+    for key, elem in word_dct.items():
+        if elem[0] == 0:
+            positive_words[key] = elem[1]
+        elif elem[1] == 0:
+            negative_words[key] = elem[0]
+        else:
+            inter_words[key] = tuple(elem)
+    
+    return (
+        pd.DataFrame(sorted(inter_words.items(), key=lambda x: sum(x[1]), reverse=True), columns=('word', 'freq')),
+        pd.DataFrame(sorted(negative_words.items(), key=lambda x: x[1], reverse=True), columns=('word', 'freq')),
+        pd.DataFrame(sorted(positive_words.items(), key=lambda x: x[1], reverse=True), columns=('word', 'freq')),
+    )
+    
+def barplotTwoDirections(pwords: udt.Dataframe):
+    fig = go.Figure()
+    fig.add_trace(go.Bar(x=pwords['word'], y=[-elm[0] for elm in pwords['freq']], name="Negative"))
+    fig.add_trace(go.Bar(x=pwords['word'], y=[elm[1] for elm in pwords['freq']], name="Positive"))
+
+    fig.update_layout(barmode='relative', 
+                      xaxis=dict(tickfont=dict(size=11, color='black')))
+    fig.show()

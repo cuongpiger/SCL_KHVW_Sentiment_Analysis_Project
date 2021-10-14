@@ -2,3 +2,5 @@
 .ipynb_checkpoints
 modules/__pycache__
 geckodriver.log
+cc.vi.300.bin
+cc.en.300.bin

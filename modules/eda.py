@@ -113,23 +113,35 @@ def createBagOfWordsFrequency(pcolumn: udt.DfStrColumn):
         for word in sen.split(" "):
             wordfreq[word] = wordfreq.get(word, 0) + 1
         
-    return sorted(wordfreq.items(), key=lambda x: x[1], reverse=True)
+    return pd.DataFrame(sorted(wordfreq.items(), key=lambda x: x[1], reverse=True), columns=('word', 'freq'))
 
-def bagOfWordsGetRangeBased(pword_freq: Dict[str, int], prange: Tuple[int, int]):
-    words = []
-    prange = sorted(prange, reverse=True)
-    
-    for key, value in pword_freq:
-        if value > prange[0]: continue
-        elif value >= prange[1]:
-            words.append((key, value))
-        else: break
+def bagOfWordsGetRangeBased(pword_freq: udt.Dataframe, prange: Tuple[int, int]):
+    prange = sorted(prange)
+    return pword_freq.loc[(pword_freq['freq'] >= prange[0]) & (pword_freq['freq'] <= prange[1])]
+
+def wordFrequencyGroupBarplot(pwordfreq: List[int], yscale=False):
+    fig, ax = plt.subplots(figsize=(15, 7))
+    bins = np.linspace(0, max(pwordfreq) + 10, 51, dtype=np.int)
+    lbls = [f"({bins[i]} ~ {bins[i + 1]})" for i in range(50)]
+    freq = np.zeros(50, dtype=np.int)
+    for v in pwordfreq:
+        idx = np.argwhere(bins > v)[0][0] - 1
+        freq[idx] += 1
         
-    return words
-
-def wordFrequencyHistplot(pwordfreq: List[int], yscale=False):
-    plt.figure(figsize=(10, 7))
-    ax = sns.histplot(x=pwordfreq, color='g', bins=50, element='step')
+    ax = fig.add_axes([0,0,1,1])
+    bars = ax.bar(lbls, freq, color='g')
+    ax.bar_label(bars, label_type="edge")
+    
     if yscale: ax.set_yscale('log')
-    plt.xticks([])
+    plt.xticks(rotation=77)
+    plt.xlabel("")
+    plt.show()
+    
+def wordFrequencyBarplot(pwordfreq: List[int]):
+    fig, ax = plt.subplots(figsize=(10, 20))
+    ax = fig.add_axes([0,0,1,1])
+    bars = ax.barh(pwordfreq['word'], pwordfreq['freq'], color='olive')
+    ax.bar_label(bars, label_type="edge")
+    plt.xticks(rotation=0)
+    plt.xlabel("")
     plt.show()

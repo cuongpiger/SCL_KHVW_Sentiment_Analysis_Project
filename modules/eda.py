@@ -4,6 +4,7 @@ import seaborn as sns
 import numpy as np
 import modules.user_object_defined as udt
 import statsmodels.api as sm
+import unicodedata
 from statsmodels.formula.api import ols
 from wordcloud import WordCloud
 from typing import Dict, Tuple
@@ -88,7 +89,7 @@ def regplotLengthNoWords(previews: udt.Dataframe):
 
 def commentWordCloud(pcolumn_df: udt.DfStrColumn):
     wc = WordCloud(background_color='white', width=1600, height=800).generate(
-        ' '.join(pcolumn_df.to_list())
+        unicodedata.normalize('NFC', " ".join(pcolumn_df.to_list()))
     )
     plt.figure(figsize=(20, 10))
     plt.imshow(wc, interpolation='bilinear')
@@ -116,6 +117,7 @@ def createBagOfWordsFrequency(pcolumn: udt.DfStrColumn):
 
 def bagOfWordsGetRangeBased(pword_freq: Dict[str, int], prange: Tuple[int, int]):
     words = []
+    prange = sorted(prange, reverse=True)
     
     for key, value in pword_freq:
         if value > prange[0]: continue

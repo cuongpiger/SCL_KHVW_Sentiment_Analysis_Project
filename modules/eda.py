@@ -5,6 +5,8 @@ import numpy as np
 import modules.user_object_defined as udt
 import statsmodels.api as sm
 from statsmodels.formula.api import ols
+from wordcloud import WordCloud
+from typing import Dict, Tuple
 
 
 def pieChart(previews: udt.Dataframe):
@@ -83,3 +85,42 @@ def regplotLengthNoWords(previews: udt.Dataframe):
     plt.figure(figsize=(12, 10))
     sns.lmplot(data=df, x='length', y='no_words', hue='label')
     plt.show()
+
+def commentWordCloud(pcolumn_df: udt.DfStrColumn):
+    wc = WordCloud(background_color='white', width=1600, height=800).generate(
+        ' '.join(pcolumn_df.to_list())
+    )
+    plt.figure(figsize=(20, 10))
+    plt.imshow(wc, interpolation='bilinear')
+    plt.axis('off')
+    plt.show()
+    
+def createWordDictionary(pcolumn: udt.DfStrColumn):
+    word_set = set((" ".join(pcolumn)).split(" "))
+    
+    word_id: Dict[str, int] = {}
+    id_word: Dict[int, str] = {}
+    for id, word in enumerate(word_set):
+        word_id[word] = id
+        id_word[id] = word
+        
+    return word_id, id_word
+
+def createBagOfWordsFrequency(pcolumn: udt.DfStrColumn):
+    wordfreq = {}
+    for sen in pcolumn:
+        for word in sen.split(" "):
+            wordfreq[word] = wordfreq.get(word, 0) + 1
+        
+    return sorted(wordfreq.items(), key=lambda x: x[1], reverse=True)
+
+def bagOfWordsGetRangeBased(pword_freq: Dict[str, int], prange: Tuple[int, int]):
+    words = []
+    
+    for key, value in pword_freq:
+        if value > prange[0]: continue
+        elif value >= prange[1]:
+            words.append((key, value))
+        else: break
+        
+    return words

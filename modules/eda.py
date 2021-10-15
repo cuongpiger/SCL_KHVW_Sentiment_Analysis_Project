@@ -180,3 +180,16 @@ def barplotTwoDirections(pwords: udt.Dataframe):
     fig.update_layout(barmode='relative', 
                       xaxis=dict(tickfont=dict(size=11, color='black')))
     fig.show()
+    
+def ftVectorization(previews: udt.Dataframe, ft):
+    inter_words, neg_words, pos_words = intersectComplementWords(previews)
+    embeded_vectors = []
+    
+    for i, words_df in enumerate([neg_words, pos_words, inter_words]):
+        for index, row in words_df.iterrows():
+            w2v = ft.get_word_vector(row['word'])
+            freq = sum(row['freq']) if i == 2 else row['freq']
+            embeded_vectors.append((row['word'], freq, w2v, i))
+            
+    return pd.DataFrame(embeded_vectors, columns=['word', 'freq', 'ft_vec', 'label'])
+        

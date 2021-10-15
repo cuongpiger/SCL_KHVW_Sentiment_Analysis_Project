@@ -212,6 +212,7 @@ def tsneGetNCompenent(pembeded_comment, n=2):
 def wordScatterPlot(tsne_df):
     df = tsne_df.copy()
     df['label'] = tsne_df['label'].apply(lambda x: "negative" if x < 1 else "positive" if x < 2 else "overlap")
+    df['freq'] = np.log(df['freq'])*10
     
     fig = px.scatter(
         df,
@@ -223,7 +224,7 @@ def wordScatterPlot(tsne_df):
         color="label",
         size_max=45,
         template="plotly_white",
-        title="Bigram similarity and frequency",
+        title="",
         labels={"words": "Avg. Length<BR>(word)"},
         color_continuous_scale=px.colors.sequential.Sunsetdark,
     )

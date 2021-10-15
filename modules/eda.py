@@ -277,3 +277,24 @@ def word3dPlot(tsne_df):
                         auto_open=True, 
                         filename=("3D_Plot.html"))
     
+def generateNGrams(ptext: str, pn: int):
+    words = ptext.split(" ")
+    compounds = zip(*[words[i:] for i in range(pn)])
+    return np.array([(' '.join(compound), '_'.join(compound)) for compound in compounds])
+    
+def genCompoundWords(pcomments, pngrams: List[int]):
+    compound_words = {}
+    word_underscore = {}
+    
+    for cmt in pcomments:
+        for n in pngrams:
+            cpws = generateNGrams(cmt, n)
+            
+            for cp, cp_ in cpws:
+                if compound_words.get(cp, None) is None:
+                    compound_words[cp] = 1
+                    word_underscore[cp] = cp_
+                else:
+                    compound_words[cp] += 1
+                    
+    return pd.DataFrame(sorted(compound_words.items(), key=lambda x: x[1], reverse=True), columns=['word', 'freq']), word_underscore

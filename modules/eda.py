@@ -2,10 +2,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+from tensorflow.python.keras.backend import count_params
 import modules.user_object_defined as udt
 import statsmodels.api as sm
 import unicodedata
+import plotly
 import plotly.graph_objects as go
+import plotly.express as px
+from sklearn.manifold import TSNE
 from statsmodels.formula.api import ols
 from wordcloud import WordCloud
 from typing import Dict, Tuple, List
@@ -193,3 +197,82 @@ def ftVectorization(previews: udt.Dataframe, ft):
             
     return pd.DataFrame(embeded_vectors, columns=['word', 'freq', 'ft_vec', 'label'])
         
+def tsneGetNCompenent(pembeded_comment, n=2):
+    cmps_reshape = pd.DataFrame(index=list(pembeded_comment.index), columns=np.arange(100))
+    for index in range(len(pembeded_comment)):
+        cmps_reshape.loc[index] = pembeded_comment.loc[index, 'ft_vec']
+    tsne_cmts = TSNE(n_components=n).fit_transform(cmps_reshape)
+    tsne_res = pembeded_comment.copy()
+    
+    for i in range(n):
+        tsne_res[f'component_{i + 1}'] = tsne_cmts[:, i]
+        
+    return tsne_res
+
+def wordScatterPlot(tsne_df):
+    df = tsne_df.copy()
+    df['label'] = tsne_df['label'].apply(lambda x: "negative" if x < 1 else "positive" if x < 2 else "overlap")
+    
+    fig = px.scatter(
+        df,
+        x="component_1",
+        y="component_2",
+        hover_name="word",
+        text="word",
+        size="freq",
+        color="label",
+        size_max=45,
+        template="plotly_white",
+        title="Bigram similarity and frequency",
+        labels={"words": "Avg. Length<BR>(word)"},
+        color_continuous_scale=px.colors.sequential.Sunsetdark,
+    )
+    fig.update_traces(marker=dict(line=dict(width=1, color="Gray")))
+    fig.update_xaxes(visible=False)
+    fig.update_yaxes(visible=False)
+    fig.update_layout(width=1200, height=500)
+    fig.show()
+    
+def word3dPlot(tsne_df):
+    df = tsne_df.copy()
+    df['label_name'] = tsne_df['label'].apply(lambda x: "negative" if x < 1 else "positive" if x < 2 else "overlap")
+    df['freq'] = np.log(df['freq'])*10
+
+    fig1 = go.Scatter3d(x=df.loc[df['label'] == 0, 'component_1'],
+                        y=df.loc[df['label'] == 0, 'component_2'],
+                        z=df.loc[df['label'] == 0, 'component_3'],
+                        marker=dict(size=df.loc[df['label'] == 0, 'freq'],
+                                    color=0,
+                                    opacity=0.9,
+                                    reversescale=True),
+                        line=dict(width=0.02), name="Negative",
+                        mode='markers', text=df.loc[df['label'] == 0, 'word'])
+    fig2 = go.Scatter3d(x=df.loc[df['label'] == 1, 'component_1'],
+                        y=df.loc[df['label'] == 1, 'component_2'],
+                        z=df.loc[df['label'] == 1, 'component_3'],
+                        marker=dict(size=df.loc[df['label'] == 1, 'freq'],
+                                    color=1,
+                                    opacity=0.9,
+                                    reversescale=True),
+                        line=dict(width=0.02), name="Positive",
+                        mode='markers', text=df.loc[df['label'] == 1, 'word'])
+    
+    fig3 = go.Scatter3d(x=df.loc[df['label'] == 2, 'component_1'],
+                        y=df.loc[df['label'] == 2, 'component_2'],
+                        z=df.loc[df['label'] == 2, 'component_3'],
+                        marker=dict(size=df.loc[df['label'] == 2, 'freq'],
+                                    color=1,
+                                    opacity=0.9,
+                                    reversescale=True),
+                        line=dict(width=0.02), name="Overlap",
+                        mode='markers', text=df.loc[df['label'] == 2, 'word'])
+
+    mylayout = go.Layout(scene=dict(xaxis=dict(title="component_1"),
+                                    yaxis=dict(title="component_2"),
+                                    zaxis=dict(title="component_3")), showlegend=True,)
+
+    plotly.offline.plot({"data": [fig1, fig2, fig3],
+                        "layout": mylayout},
+                        auto_open=True, 
+                        filename=("3D_Plot.html"))
+    

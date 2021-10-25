@@ -2,8 +2,13 @@ import plotly.graph_objects as go
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import unicodedata
+import numpy as np
 import pickle
+import re
 from sklearn.metrics import classification_report, confusion_matrix, plot_roc_curve
+
+from typing import List
 
 
 def emojiEvaluationGroupedBarChart(df, head=5):
@@ -35,3 +40,39 @@ def rocAuc(model, X_vectorizer, y_true):
 def saveByPickle(object, path):
     pickle.dump(object, open(path, "wb"))
     print(f"{object} has been saved at {path}.")
+    
+def convertToNFC(series):
+    return series.apply(lambda x: unicodedata.normalize('NFC', x))
+
+
+def generateNGrams(ptext: str, pn: int):
+    words = ptext.split(" ")
+    compounds = zip(*[words[i:] for i in range(pn)])
+    return np.array([(' '.join(compound), '_'.join(compound)) for compound in compounds])
+
+def replaceInNGrams(pcomments, pngrams: List[int], min_df: float, max_df: float):
+    compound_words = {}
+    pngrams = sorted(pngrams, reverse=True)
+    dash_comments = []
+    
+    for i, cmt in enumerate(pcomments):
+        for n in pngrams:
+            cpws = generateNGrams(cmt, n)
+            for cp, cp_ in cpws:
+                if compound_words.get(cp, 0) <= i:
+                    compound_words[cp] = compound_words.get(cp, 0) + 1
+                    
+    for cmt in pcomments:
+        ngrams_words = []
+        for n in pngrams:
+            for cp, cp_ in generateNGrams(cmt, n):
+                if min_df <= compound_words.get(cp) <= max_df:
+                    ngrams_words.append((compound_words.get(cp), cp, cp_))
+        
+        ngrams_words = sorted(ngrams_words, reverse=True)
+        for _, cp, cp_ in ngrams_words:
+            cmt = re.sub(cp, f" {cp_} ", cmt)
+            
+        dash_comments.append(re.sub("\s+", " ", cmt.strip()))
+                    
+    return dash_comments

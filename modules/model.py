@@ -5,11 +5,40 @@ import seaborn as sns
 import unicodedata
 import numpy as np
 import pickle
+import emojis
 import re
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, plot_roc_curve
 
 from typing import List
 
+
+def textNFCformat(pdata: pd.DataFrame, pcols: List[str]):
+    for col in pcols:
+        pdata[col] = pdata[col].apply(lambda s: unicodedata.normalize('NFC', s))
+
+    return pdata
+
+
+def expandEmojisDecode(pcomment: str):
+    expand_emojis = ''
+    for e in emojis.get(pcomment):
+        amount = pcomment.count(e)
+        expand_emojis += (f"{emojis.decode(e)[1:-1]} ")*amount
+        
+    return expand_emojis.strip()  
+
+
+def dataSplitSaved(pdata: pd.DataFrame, ptest_size: float, ppath: str):
+    X_train, X_test, y_train, y_test = train_test_split(pdata.iloc[:, :-1], pdata.iloc[:, -1], test_size=ptest_size, random_state=42)
+    
+    X_train.to_csv(f"{ppath}/train/X.csv", index=False)
+    y_train.to_csv(f"{ppath}/train/y.csv", index=False)
+
+    X_test.to_csv(f"{ppath}/test/X.csv", index=False)
+    y_test.to_csv(f"{ppath}/test/y.csv", index=False)
+    
+    print(f"📢 Your dataset has saved at {ppath}.")
 
 def emojiEvaluationGroupedBarChart(df, head=5):
     fig = go.Figure()

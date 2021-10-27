@@ -241,6 +241,11 @@ def replaceInNGrams(pcomments, pngrams: List[int], ngrams_dict, on_col, min_df=1
                     
     return dash_comments
 
+def combinePrediction(a, b, c):
+    neg = (a[0] + b[0] + c[0])/3
+    pos = (a[1] + b[1] + c[1])/3
+    
+    return 0 if neg > pos else 1    
 
 class SentimentModel:
     def __init__(self, pmodel, pvector, py):

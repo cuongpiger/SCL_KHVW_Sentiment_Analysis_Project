@@ -16,9 +16,9 @@ from sklearn.metrics import roc_auc_score, accuracy_score
 from typing import List
 
 
-def textNFCformat(pdata: pd.DataFrame, pcols: List[str]):
+def textNFxformat(pdata: pd.DataFrame, pcols: List[str], type):
     for col in pcols:
-        pdata[col] = pdata[col].apply(lambda s: unicodedata.normalize('NFC', s))
+        pdata[col] = pdata[col].apply(lambda s: unicodedata.normalize(type, s))
 
     return pdata
 
@@ -63,6 +63,9 @@ def reviewStatistic(pdata: pd.Series, pis_emoji=False):
         'freq_doc': [v for _, v in words_dict.values()]
     }).sort_values(by=['freq', 'freq_doc']).reset_index(drop=True)
     
+def convertToNFX(series, type: str):
+    return series.apply(lambda x: unicodedata.normalize(type, x))
+    
     
 def wordFrequencyBarplot(pdata: pd.DataFrame):
     ind = np.arange(len(pdata))
@@ -81,6 +84,7 @@ def wordFrequencyBarplot(pdata: pd.DataFrame):
     
 
 def vectorizer(pdata: pd.Series, pmethod: str ,pmin_df=1, pmax_df=1.0):
+    pdata = convertToNFX(pdata, 'NFC')
     if pmethod == 'bow': vec = CountVectorizer(min_df=pmin_df, max_df=pmax_df)
     else: vec = TfidfVectorizer(min_df=pmin_df, max_df=pmax_df)
     
@@ -191,9 +195,6 @@ def confusionMatrix(y_true, y_pred):
 def saveByPickle(object, path):
     pickle.dump(object, open(path, "wb"))
     print(f"{object} has been saved at {path}.")
-    
-def convertToNFC(series):
-    return series.apply(lambda x: unicodedata.normalize('NFC', x))
 
 
 def generateNGrams(ptext: str, pn: int):
@@ -201,24 +202,35 @@ def generateNGrams(ptext: str, pn: int):
     compounds = zip(*[words[i:] for i in range(pn)])
     return np.array([(' '.join(compound), '_'.join(compound)) for compound in compounds])
 
-def replaceInNGrams(pcomments, pngrams: List[int], min_df: float, max_df: float):
-    compound_words = {}
-    pngrams = sorted(pngrams, reverse=True)
-    dash_comments = []
-    
+def getDashWords(pcomments, pngrams):
+    ngram_words = {}
     for i, cmt in enumerate(pcomments):
         for n in pngrams:
             cpws = generateNGrams(cmt, n)
             for cp, cp_ in cpws:
-                if compound_words.get(cp, 0) <= i:
-                    compound_words[cp] = compound_words.get(cp, 0) + 1
+                if ngram_words.get(cp, None) == None:
+                    ngram_words[cp] = [1, 1] # dash, entrire, doc
+                else:
+                    ngram_words[cp][0] += 1
+                    ngram_words[cp][1] += int(ngram_words[cp][1] <= i)
                     
+    df = pd.DataFrame({
+        'freq_doc': [v for _, v in ngram_words.values()],
+        'freq': [v for v, _ in ngram_words.values()]
+    }, index=ngram_words.keys())
+    
+    df = df.sort_values(by=['freq_doc', 'freq'], ascending=False)
+    return df
+        
+        
+def replaceInNGrams(pcomments, pngrams: List[int], ngrams_dict, on_col, min_df=1, max_df=99999999999):                    
+    dash_comments = []
     for cmt in pcomments:
         ngrams_words = []
         for n in pngrams:
             for cp, cp_ in generateNGrams(cmt, n):
-                if min_df <= compound_words.get(cp) <= max_df:
-                    ngrams_words.append((compound_words.get(cp), cp, cp_))
+                if min_df <= ngrams_dict.loc[cp, on_col] <= max_df:
+                    ngrams_words.append((ngrams_dict.loc[cp, on_col], cp, cp_))
         
         ngrams_words = sorted(ngrams_words, reverse=True)
         for _, cp, cp_ in ngrams_words:

@@ -229,6 +229,7 @@ def replaceInNGrams(pcomments, pngrams: List[int], ngrams_dict, on_col, min_df=1
         ngrams_words = []
         for n in pngrams:
             for cp, cp_ in generateNGrams(cmt, n):
+                if ngrams_dict.get(cp, None) is None: continue
                 if min_df <= ngrams_dict.loc[cp, on_col] <= max_df:
                     ngrams_words.append((ngrams_dict.loc[cp, on_col], cp, cp_))
         

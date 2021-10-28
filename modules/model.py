@@ -15,6 +15,32 @@ from sklearn.metrics import roc_auc_score, accuracy_score
 
 from typing import List
 
+class SentimentModel:
+    def __init__(self, pmodel, pvector, py):
+        self.model = pmodel
+        self.vectorizer = pvector[1][0]
+        self.model.fit(pvector[1][1], py)
+        
+    def predict(self, pnew_data):
+        new_data = self.vectorizer.transform(pnew_data)
+        yhat_class = self.model.predict(new_data)
+        yhat_proba = self.model.predict_proba(new_data)
+        
+        return pd.DataFrame({
+            'input': pnew_data,
+            'output_proba': [tuple(x) for x in yhat_proba],
+            'output_class': yhat_class, 
+        })
+        
+    def info(self):
+        print(self.model)
+        
+    def rocAuc(self, X, y_true):
+        X_vec = self.vectorizer.transform(X)
+        plot_roc_curve(self.model, X_vec, y_true)
+        plt.show()
+
+
 
 def textNFxformat(pdata: pd.DataFrame, pcols: List[str], type):
     for col in pcols:
@@ -247,27 +273,11 @@ def combinePrediction(a, b, c):
     
     return 0 if neg > pos else 1    
 
-class SentimentModel:
-    def __init__(self, pmodel, pvector, py):
-        self.model = pmodel
-        self.vectorizer = pvector[1][0]
-        self.model.fit(pvector[1][1], py)
-        
-    def predict(self, pnew_data):
-        new_data = self.vectorizer.transform(pnew_data)
-        yhat_class = self.model.predict(new_data)
-        yhat_proba = self.model.predict_proba(new_data)
-        
-        return pd.DataFrame({
-            'input': pnew_data,
-            'output_proba': [tuple(x) for x in yhat_proba],
-            'output_class': yhat_class, 
-        })
-        
-    def info(self):
-        print(self.model)
-        
-    def rocAuc(self, X, y_true):
-        X_vec = self.vectorizer.transform(X)
-        plot_roc_curve(self.model, X_vec, y_true)
-        plt.show()
+# def build(pembedding_dim:int=32, pnum_words:int=5000, pmax_len:int=100, pnum_layers:int=2, pnum_units:int=32, pdropout:float=0.2):
+#     input_layer = Input(shape=(pmax_len,))
+#     embedding_layer = Embedding(input_dim=pnum_words, output_dim=pembedding_dim, input_length=pmax_len)(input_layer)
+#     lstm_layer = LSTM(units=pnum_units, dropout=pdropout, recurrent_dropout=pdropout, return_sequences=True)(embedding_layer)
+#     lstm_layer = LSTM(units=pnum_units, dropout=pdropout, recurrent_dropout=pdropout)(lstm_layer)
+#     output_layer = Dense(units=1, activation='sigmoid')(lstm_layer)
+#     model = Model.Model(inputs=input_layer, outputs=output_layer)
+#     return model

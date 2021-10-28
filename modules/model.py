@@ -272,12 +272,3 @@ def combinePrediction(a, b, c):
     pos = (a[1] + b[1] + c[1])/3
     
     return 0 if neg > pos else 1    
-
-# def build(pembedding_dim:int=32, pnum_words:int=5000, pmax_len:int=100, pnum_layers:int=2, pnum_units:int=32, pdropout:float=0.2):
-#     input_layer = Input(shape=(pmax_len,))
-#     embedding_layer = Embedding(input_dim=pnum_words, output_dim=pembedding_dim, input_length=pmax_len)(input_layer)
-#     lstm_layer = LSTM(units=pnum_units, dropout=pdropout, recurrent_dropout=pdropout, return_sequences=True)(embedding_layer)
-#     lstm_layer = LSTM(units=pnum_units, dropout=pdropout, recurrent_dropout=pdropout)(lstm_layer)
-#     output_layer = Dense(units=1, activation='sigmoid')(lstm_layer)
-#     model = Model.Model(inputs=input_layer, outputs=output_layer)
-#     return model

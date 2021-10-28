@@ -50,6 +50,20 @@ def fit(pmodel, pX_train, py_train, pbatch_size, pepochs, psave_path):
     
     pmodel.save(psave_path)
     print(his)
-    # score, acc = pmodel.evaluate(x=pX_val, y=py_val, batch_size=pbatch_size)
-    # print('Test loss:', score)
-    # print('Test accuracy:', acc)
+
+
+class SentimentLSTM:
+    def __init__(self, pmodel, ptokenizer):
+        self.model = pmodel
+        self.tokenizer = ptokenizer
+        
+    def predict(self, pnew_data):
+        new_data = self.tokenizer.texts_to_sequences(pnew_data)
+        new_data = pad_sequences(new_data, maxlen=100)
+        yhat_proba = self.model.predict(new_data)
+        
+        return pd.DataFrame({
+            'input': pnew_data,
+            'output_proba': [tuple(x) for x in yhat_proba],
+            'output_class': np.argmax(yhat_proba, axis=1)
+        })

@@ -3,7 +3,7 @@ from keras.preprocessing.sequence import pad_sequences
 from keras.layers import Dense, Embedding, LSTM, Input
 from keras.models import Sequential
 from keras.utils.vis_utils import plot_model
-from keras.utils import to_categorical
+from tensorflow.keras.utils import to_categorical
 from keras.callbacks import TensorBoard, ModelCheckpoint
 from keras.preprocessing.text import Tokenizer
 from sklearn.model_selection import train_test_split
@@ -39,7 +39,7 @@ def prepareData(pX, py, pval_size=0.1):
 def createCallbacks(name):
     tensorboard_callback = TensorBoard(log_dir=os.path.join(os.getcwd(), "tb_log_sentiment", name), write_graph=True,
                                        write_grads=False)
-    checkpoint_callback = ModelCheckpoint(filepath=name + "/weights/" + "{epoch:02d}-{val_loss:.6f}.hdf5",
+    checkpoint_callback = ModelCheckpoint(filepath=name + "/weights/" + "{epoch:02d}-{val_loss:.6f}.h5",
                                           monitor='val_loss', verbose=0, save_best_only=True)
     return [tensorboard_callback, checkpoint_callback]
 

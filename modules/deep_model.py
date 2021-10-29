@@ -78,7 +78,7 @@ class SentimentLSTM:
         ixs = np.random.choice(self.X.shape[0], int(self.X.shape[0]*0.1), replace=False)
         loss = self.model.evaluate(self.X[ixs], self.y[ixs])
         
-        return {'loss': loss}
+        return loss[0]
         
     def getTokenizerWordIndex(self):
         return self.tokenizer.word_index

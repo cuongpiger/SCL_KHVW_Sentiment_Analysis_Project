@@ -1,12 +1,12 @@
 import pickle
 import pandas as pd
-import numpy as np
 import emojis
 import unicodedata
 import modules.processor as Processor
 import modules.utils as Utils
 import enchant
 import plotly.graph_objects as go
+from modules.model import replaceInNGrams
 
 def loadByPickle(path):
     with open(path, 'rb') as f:
@@ -39,6 +39,8 @@ class ShopeeSentiment:
         self.config = self._loadConfigFiles("./modules/dependencies/abbreviate.txt",
                                             "./modules/dependencies/vocabulary.txt",
                                             "./modules/dependencies/stopwords.txt")
+        if type(self.comment_model).__name__ == "SentimentModel":
+            self.config['ngrams'] = pd.read_csv("./modules/dependencies/ngrams.csv", index_col=0)
         
     def _loadConfigFiles(self, pabbreviate_path, pvocabulary_path, pstop_words_path):
         return {
@@ -57,6 +59,10 @@ class ShopeeSentiment:
         df['review'] = df['review'].apply(lambda cmt: Processor.replaceWithDictionary(cmt, pabbreviate_dict))
         df['review'] = df['review'].apply(lambda cmt: Processor.removeNoiseWord(cmt, pvocabulary_dict, peng_dict))
         df['review'] = df['review'].apply(lambda cmt: Processor.removeStopwords(cmt, pstop_words))
+        
+        if type(self.comment_model).__name__ == "SentimentModel":
+            df['review'] = replaceInNGrams(df['review'], [2, 3, 4], self.config['ngrams'], 'freq_doc')
+        
         df['review'] = convertToNFX(df['review'], 'NFC')
         df['emoji'] = convertToNFX(df['emoji'], 'NFC')
 

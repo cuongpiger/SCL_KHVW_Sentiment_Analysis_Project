@@ -27,9 +27,10 @@ def loadByPickle(path):
         return pickle.load(f)
 
 class SentimentLSTM:
-    def __init__(self, pmodel_path: str, ptokenizer_path) -> (None):
-        self.model = load_model(pmodel_path)
-        (self.tokenizer, self.embedding_dim) = loadByPickle(ptokenizer_path)
+    def __init__(self, pmodel_path:str=None, ptokenizer_path:str=None) -> (None):
+        if pmodel_path and ptokenizer_path:
+            self.model = load_model(pmodel_path)
+            (self.tokenizer, self.embedding_dim) = loadByPickle(ptokenizer_path)
     
     def _initTokenizer(self, pdata: pd.Series, pnum_words:int=None):
         self.tokenizer = Tokenizer(num_words=pnum_words)

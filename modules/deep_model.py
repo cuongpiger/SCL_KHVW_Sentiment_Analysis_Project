@@ -1,12 +1,9 @@
-from keras.preprocessing import sequence
 from keras.preprocessing.sequence import pad_sequences
 from keras.layers import Dense, Embedding, LSTM, Input, Conv1D, MaxPooling1D, GlobalMaxPooling1D
-from keras.models import Model, Sequential
-from keras.utils.vis_utils import plot_model
+from keras.models import Model, Sequential, load_model
 from tensorflow.keras.utils import to_categorical
 from keras.callbacks import TensorBoard, ModelCheckpoint
 from keras.preprocessing.text import Tokenizer
-from sklearn.model_selection import train_test_split
 import unicodedata
 import pandas as pd
 import os
@@ -25,9 +22,14 @@ def saveByPickle(object, path):
 def convertToNFX(series, type: str):
     return series.apply(lambda x: unicodedata.normalize(type, x))
 
+def loadByPickle(path):
+    with open(path, 'rb') as f:
+        return pickle.load(f)
+
 class SentimentLSTM:
-    def __init__(self) -> (None):
-        pass
+    def __init__(self, pmodel_path: str, ptokenizer_path) -> (None):
+        self.model = load_model(pmodel_path)
+        (self.tokenizer, self.embedding_dim) = loadByPickle(ptokenizer_path)
     
     def _initTokenizer(self, pdata: pd.Series, pnum_words:int=None):
         self.tokenizer = Tokenizer(num_words=pnum_words)
@@ -42,11 +44,10 @@ class SentimentLSTM:
         
     def _defineModel(self, pno_units:int=10, pdropout:float=0.2, poptimizer:str='adam'):
         vocab_size = len(self.tokenizer.word_index) + 1
-        embedding_dim = self.X.shape[1]
-        
+        self.embedding_dim = self.X.shape[1]
         self.model = Sequential()
         self.model.add(Input(shape=(100,), name='input'))
-        self.model.add(Embedding(vocab_size, embedding_dim, input_length=100, name='embedding'))
+        self.model.add(Embedding(vocab_size, self.embedding_dim, input_length=100, name='embedding'))
         self.model.add(LSTM(units=pno_units, dropout=pdropout, recurrent_dropout=pdropout, name='lstm'))
         self.model.add(Dense(2, activation='softmax', name='output'))
         self.model.compile(loss='binary_crossentropy', optimizer=poptimizer, metrics=['accuracy'])
@@ -65,7 +66,7 @@ class SentimentLSTM:
               
     def predict(self, pnew_data):
         new_data = self.tokenizer.texts_to_sequences(convertToNFX(pnew_data, 'NFC'))
-        new_data = pad_sequences(new_data, maxlen=self.X.shape[1])
+        new_data = pad_sequences(new_data, maxlen=self.embedding_dim)
         yhat_proba = self.model.predict(new_data)
 
         return pd.DataFrame({
@@ -85,7 +86,7 @@ class SentimentLSTM:
     
     def save(self, pmodel_path:str, ptoken_path:str):
         self.model.save(pmodel_path)
-        saveByPickle(self.tokenizer, ptoken_path)
+        saveByPickle((self.tokenizer, self.X.shape[1]), ptoken_path)
         print(f"📢 Model has been saved at {pmodel_path} - Tokenizer has been saved at {ptoken_path}.") 
         
 class SentimentCNN1D:

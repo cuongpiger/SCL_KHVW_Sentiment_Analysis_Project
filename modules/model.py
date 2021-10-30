@@ -272,3 +272,7 @@ def combinePrediction(a, b, c):
     pos = (a[1] + b[1] + c[1])/3
     
     return 0 if neg > pos else 1    
+
+def loadByPickle(path):
+    with open(path, 'rb') as f:
+        return pickle.load(f)

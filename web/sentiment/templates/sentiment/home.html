@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block scripts %}
+  <!-- defer parameter is used to delay js code until the page is completely loaded -->
+  <script src="{% static 'sentiment/main.js' %}" defer></script>
+{% endblock scripts %}
+
+{% block content %}
+<form id="mainForm">
+  <div class="banner">
+    <h1>Shopee Fashion - Sentiment Analysis Model Based on customers' comments<br><span style="font-size: 25px; color: lightgrey">Author: Manh Cuong</span></h1>
+  </div>
+  <div class="item">
+    <p>Enter your comment in Vietnamese here</p>
+    <textarea id="commentArea" rows="3"></textarea>
+  </div>
+  <div class="item">
+    <p><b>Predicted probability value:</b> <span id="negaProb" style="color: red;">negative: %</span> <b>-</b> <span id="posiProb" style="color: green;">positive: %</span></p>
+
+  </div>
+  
+  <div class="btn-block">
+    <button type="submit">Send</button>
+  </div>
+</form>
+</div>
+{% endblock content %}

@@ -1,0 +1,67 @@
+sp,sản phẩm
+sd,sử dụng
+sph,sản phẩm
+ths,thanks
+tks,thanks
+thk,thanks
+thank you,thanks
+thabs,thanks
+thươg,thương
+thw,thương
+đep,đẹp
+gh,giao hàng
+góm,gớm
+gê,ghê
+dỏm,dởm
+nsc,nói chuyện
+nc,nói chuyện
+ns,nói
+lun,luôn
+okela,ok
+okla,ok
+oke,ok
+okie,ok
+kela,ok
+uki,ok
+âu cơ,ok
+nchung,nói chung
+bik,biết
+pik,biết
+tôt,tốt
+cx,cũng
+cũg,cũng
+nma,nhưng mà
+mn,mọi người
+mng,mọi người
+god,good
+fedback,feedback
+tl,trả lời
+vs,với
+dc,được
+đc,được
+lm,lắm
+lawm,lắm
+lquan,liên quan
+đh,đéo hiểu
+dh,đéo hiểu
+ck,chuyển khoảng
+fom,form
+bt,bình thường
+bth,bình thường
+chẳg,chẳng
+sz,size
+ms,mới
+v,vậy
+nhg,nhưng
+ngừ,người
+hk,không
+kh,không
+ko,không
+k,không
+khg,không
+r,rồi
+t,tôi
+tui,tôi
+m,mình
+mink,mình
+mk,mình

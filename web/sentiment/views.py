@@ -5,6 +5,8 @@ from modules import model as Model
 from modules import deep_model as DeepModel
 import pandas as pd
 import json
+from django.views.decorators.csrf import csrf_exempt
+
 
 judge = None
 
@@ -49,6 +51,7 @@ def get_predicted_sentiment(request):
     
     return JsonResponse({'response': response})
 
+@csrf_exempt 
 def ajax_predict_comment(request):
     global judge
 
